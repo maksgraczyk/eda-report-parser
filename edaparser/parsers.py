@@ -48,17 +48,53 @@ class VivadoTableParser(Parser):
 
         result = {}
 
+        def count_spaces(string):
+            cnt = 0
+
+            for letter in string[1:]:
+                if letter == ' ':
+                    cnt += 1
+                else:
+                    break
+
+            return cnt
+
         for section_name, table_lines in tables:
-            parsed_table = []
+            parsed_table, children = [], {}
+
+            orig_space_level = None
+            cur_space_level = None
+            last_space_index = []
 
             for line in table_lines:
-                if re.match(r'^[\+\-]+$', line):
-                    parsed_table.append(None)
-                else:
-                    row_elements = filter(lambda x: len(x) > 0,
-                                          map(str.strip, line.split(' | ')))
-                    parsed_table.append(list(row_elements))
+                if not re.match(r'^[\+\-]+$', line):
+                    i = len(parsed_table)
 
-            result[section_name] = parsed_table
+                    row_elements = \
+                        list(map(str.strip, line.split(' |')))[:-1]
+                    spaces_cnt = count_spaces(row_elements[0])
+
+                    if i > 0:
+                        if cur_space_level is None:
+                            cur_space_level = spaces_cnt
+                            orig_space_level = spaces_cnt
+                            last_space_index.append(i)
+                        elif spaces_cnt > cur_space_level:
+                            cur_space_level = spaces_cnt
+                            last_space_index.append(i)
+                        elif spaces_cnt < cur_space_level:
+                            cur_space_level = spaces_cnt
+                            last_space_index.pop()
+                            last_space_index[-1] = i
+                        else:
+                            last_space_index[-1] = i
+
+                        if cur_space_level > orig_space_level:
+                            children[i] = last_space_index[-2]
+
+                    row_elements[0] = row_elements[0][spaces_cnt + 1:]
+                    parsed_table.append(row_elements)
+
+            result[section_name] = (parsed_table, children)
 
         return result
