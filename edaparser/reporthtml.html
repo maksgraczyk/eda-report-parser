@@ -40,11 +40,19 @@
             type="application/javascript"></script>
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"
             type="application/javascript"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/natural.js"
+            type="application/javascript"></script>
 
     <script type="application/javascript">
       $(document).ready( function () {
           $('.interactive').DataTable({
-              order: []
+              order: [],
+              columnDefs: [
+                  {
+                      type: 'natural',
+                      targets: '_all'
+                  }
+              ]
           });
 
           $('.section').accordion({
