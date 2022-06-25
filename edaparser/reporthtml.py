@@ -2,6 +2,7 @@ import argparse
 import sys
 from pathlib import Path
 from tabulate import tabulate
+from collections import defaultdict
 
 
 PROG_NAME = 'reporthtml'
@@ -68,14 +69,37 @@ def run(files, device, tool, output):
             if len(rows) <= 1:
                 continue
 
-            table_str = tabulate(rows, headers='firstrow',
-                                 tablefmt='html')
-            table_str = table_str.replace('<table>',
-                                          '<table class="interactive">')
-            table_str = f'<h2>{section}</h2>\n' + table_str
-            table_str = '<div class="section">\n' + table_str + '\n</div>'
+            header = rows[0]
 
-            tables.append(table_str)
+            main_rows = rows.copy()
+            children_rows = defaultdict(list)
+
+            for child, parent in children.items():
+                children_rows[main_rows[parent][0]].append(rows[child])
+
+            for child in sorted(children.keys(), reverse=True):
+                del main_rows[child]
+
+            main_rows = main_rows[1:]
+
+            final_table_str = tabulate(main_rows, headers=header,
+                                       tablefmt='html')
+            final_table_str = \
+                final_table_str.replace('<table>',
+                                        '<table class="interactive">')
+
+            for parent_name, child_rows in children_rows.items():
+                table_str = f'<h3>{parent_name}</h3>\n' + \
+                    tabulate(child_rows, headers=header, tablefmt='html')
+                table_str = table_str.replace('<table>',
+                                              '<table class="interactive">')
+                final_table_str += '\n' + table_str
+
+            final_table_str = \
+                f'<div class="section">\n<h2>{section}</h2>\n<div>' + \
+                final_table_str + '\n</div></div>'
+
+            tables.append(final_table_str)
 
         div_str = \
             '<div style="display: none" ' + \
