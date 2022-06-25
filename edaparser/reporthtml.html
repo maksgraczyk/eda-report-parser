@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{DEVICE NAME}</title>
+    <style type="text/css">
+      body {
+          font-family: Verdana;
+          margin-top: 20px;
+          margin-left: auto;
+          margin-right: auto;
+          width:80%;
+      }
+
+      h1 {
+          text-align: center;
+      }
+
+      #type_dropbox {
+          width: 300px;
+      }
+
+      #tables {
+          margin-top: 20px;
+      }
+
+      h2 {
+          text-decoration: underline;
+          cursor: pointer;
+      }
+    </style>
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"
+          type="text/css">
+    <link rel="stylesheet"
+          href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css"
+          type="text/css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            type="application/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"
+            type="application/javascript"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"
+            type="application/javascript"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/natural.js"
+            type="application/javascript"></script>
+
+    <script type="application/javascript">
+      $(document).ready( function () {
+          $('.interactive').DataTable({
+              order: [],
+              columnDefs: [
+                  {
+                      type: 'natural',
+                      targets: '_all'
+                  }
+              ]
+          });
+
+          $('.section').accordion({
+              heightStyle: "content",
+              collapsible: true,
+              active: false,
+              header: "h2"
+          });
+
+          $('select').on('change', function (event) {
+              var new_value = this.value;
+              $('div#tables>div').each(function () {
+                  if ($(this).attr('id') == new_value) {
+                      $(this).show();
+                  } else {
+                      $(this).hide();
+                  }
+              });
+          });
+      } );
+    </script>
+  </head>
+  <body>
+    <h1>{DEVICE NAME}</h1>
+    <div id="selection">
+      <p>
+        <b><label for="type">Type:</label></b>
+        <select name="type" id="type_dropbox" autocomplete="off">
+          <option value="none"
+                  selected disabled hidden>(click to select)</option>
+          {TYPES}
+        </select>
+      </p>
+    </div>
+    <div id="tables">
+      {TABLES}
+    </div>
+  </body>
+</html>
