@@ -43,8 +43,11 @@
 
     <script type="application/javascript">
       $(document).ready( function () {
-          $('.interactive').DataTable();
-          $('.sections').accordion({
+          $('.interactive').DataTable({
+              order: []
+          });
+
+          $('.section').accordion({
               heightStyle: "content",
               collapsible: true,
               active: false
