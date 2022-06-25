@@ -93,6 +93,11 @@ class VivadoTableParser(Parser):
                             children[i] = last_space_index[-2]
 
                     row_elements[0] = row_elements[0][spaces_cnt + 1:]
+
+                    for i in range(len(row_elements)):
+                        if len(row_elements[i]) == 0:
+                            row_elements[i] = None
+
                     parsed_table.append(row_elements)
 
             result[section_name] = (parsed_table, children)
