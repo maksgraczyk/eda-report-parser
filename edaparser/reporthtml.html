@@ -8,51 +8,59 @@
           margin-top: 20px;
           margin-left: auto;
           margin-right: auto;
-          width:70%;
+          width:80%;
       }
 
       h1 {
           text-align: center;
       }
 
-      #type_dropbox, #section_dropbox {
-          width: 100%;
-      }
-
-      .label {
-          font-weight: bold;
-          width:80px;
-          text-align:left;
-          display: inline-block;
-      }
-
-      .field {
+      #type_dropbox {
           width: 300px;
-          display: inline-block;
       }
 
       #tables {
           margin-top: 20px;
       }
+
+      h2 {
+          text-decoration: underline;
+          cursor: pointer;
+      }
     </style>
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"
+          type="text/css">
+    <link rel="stylesheet"
+          href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css"
+          type="text/css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             type="application/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"
+            type="application/javascript"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"
+            type="application/javascript"></script>
+
+    <script type="application/javascript">
+      $(document).ready( function () {
+          $('.interactive').DataTable();
+          $('.sections').accordion({
+              heightStyle: "content",
+              collapsible: true,
+              active: false
+          });
+      } );
+    </script>
   </head>
   <body>
     <h1>{DEVICE NAME}</h1>
     <div id="selection">
-      <div class="label">Type:</div>
-      <div class="field">
+      <p>
+        <b>Type:</b>
         <select name="type" id="type_dropbox">
           {TYPES}
         </select>
-      </div>
-      <br />
-      <div class="label">Section:</div>
-      <div class="field">
-        <select name="section" id="section_dropbox">
-        </select>
-      </div>
+      </p>
     </div>
     <div id="tables">
       {TABLES}
