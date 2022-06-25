@@ -120,7 +120,7 @@ def run(files, device, tool, output):
         f.write(final_report)
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(prog=PROG_NAME,
                                      description='Produce an all-in-one HTML '
                                      'report from one or more text reports '
