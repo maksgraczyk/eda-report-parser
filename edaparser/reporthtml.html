@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{DEVICE NAME}</title>
+    <style type="text/css">
+      body {
+          font-family: Verdana;
+          margin-top: 20px;
+          margin-left: auto;
+          margin-right: auto;
+          width:70%;
+      }
+
+      h1 {
+          text-align: center;
+      }
+
+      #type_dropbox, #section_dropbox {
+          width: 100%;
+      }
+
+      .label {
+          font-weight: bold;
+          width:80px;
+          text-align:left;
+          display: inline-block;
+      }
+
+      .field {
+          width: 300px;
+          display: inline-block;
+      }
+
+      #tables {
+          margin-top: 20px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            type="application/javascript"></script>
+  </head>
+  <body>
+    <h1>{DEVICE NAME}</h1>
+    <div id="selection">
+      <div class="label">Type:</div>
+      <div class="field">
+        <select name="type" id="type_dropbox">
+          {TYPES}
+        </select>
+      </div>
+      <br />
+      <div class="label">Section:</div>
+      <div class="field">
+        <select name="section" id="section_dropbox">
+        </select>
+      </div>
+    </div>
+    <div id="tables">
+      {TABLES}
+    </div>
+  </body>
+</html>
