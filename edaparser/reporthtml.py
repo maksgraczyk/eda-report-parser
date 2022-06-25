@@ -43,7 +43,8 @@ def run(files, device, tool, output):
     types_strs = []
 
     for t in src_report_strs.keys():
-        types_strs.append(f'<option value="{t}">{t}</option>')
+        types_strs.append(
+            f'<option value="{t.replace(" ", "_")}">{t}</option>')
 
     substitutions['{TYPES}'] = '\n          '.join(types_strs)
 
@@ -72,11 +73,13 @@ def run(files, device, tool, output):
             table_str = table_str.replace('<table>',
                                           '<table class="interactive">')
             table_str = f'<h2>{section}</h2>\n' + table_str
+            table_str = '<div class="section">\n' + table_str + '\n</div>'
 
             tables.append(table_str)
 
         div_str = \
-            f'<div class="sections" id="{key.replace(" ", "_")}">\n' + \
+            '<div style="display: none" ' + \
+            f'id="{key.replace(" ", "_")}">\n' + \
             '\n'.join(tables) + '</div>'
 
         table_divs.append(div_str)
