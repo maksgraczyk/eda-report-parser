@@ -1,6 +1,7 @@
 import argparse
 import sys
 from pathlib import Path
+from tabulate import tabulate
 
 
 PROG_NAME = 'reporthtml'
@@ -12,8 +13,8 @@ def error(msg):
 
 
 def run(files, device, tool, output):
+    # Setting things up
     src_report_strs = {}
-    types = []
 
     for path in files:
         if not path.exists():
@@ -27,7 +28,6 @@ def run(files, device, tool, output):
                 string += line
 
         src_report_strs[path.stem] = string
-        types.append(path.stem)
 
     report_template = ''
 
@@ -39,13 +39,51 @@ def run(files, device, tool, output):
         '{DEVICE NAME}': device
     }
 
+    # Preparing a substitution for {TYPES}
     types_strs = []
 
-    for t in types:
+    for t in src_report_strs.keys():
         types_strs.append(f'<option value="{t}">{t}</option>')
 
     substitutions['{TYPES}'] = '\n          '.join(types_strs)
 
+    # Preparing a substitution for {TABLES}
+    raw_tables = {}
+
+    if tool == 'vivado':
+        from edaparser import VivadoTableParser
+        constr = VivadoTableParser
+
+    for key, value in src_report_strs.items():
+        parser = constr(value)
+        raw_tables[key] = parser.get_table()
+
+    table_divs = []
+
+    for key, value in raw_tables.items():
+        tables = []
+
+        for section, (rows, children) in value.items():
+            if len(rows) <= 1:
+                continue
+
+            table_str = tabulate(rows, headers='firstrow',
+                                 tablefmt='html')
+            table_str = table_str.replace('<table>',
+                                          '<table class="interactive">')
+            table_str = f'<h2>{section}</h2>\n' + table_str
+
+            tables.append(table_str)
+
+        div_str = \
+            f'<div class="sections" id="{key.replace(" ", "_")}">\n' + \
+            '\n'.join(tables) + '</div>'
+
+        table_divs.append(div_str)
+
+    substitutions['{TABLES}'] = '\n'.join(table_divs)
+
+    # Writing the result to the output HTML file
     final_report = report_template
 
     for key, value in substitutions.items():
