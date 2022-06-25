@@ -52,6 +52,17 @@
               collapsible: true,
               active: false
           });
+
+          $('select').on('change', function (event) {
+              var new_value = this.value;
+              $('div#tables>div').each(function () {
+                  if ($(this).attr('id') == new_value) {
+                      $(this).show();
+                  } else {
+                      $(this).hide();
+                  }
+              });
+          });
       } );
     </script>
   </head>
@@ -59,8 +70,10 @@
     <h1>{DEVICE NAME}</h1>
     <div id="selection">
       <p>
-        <b>Type:</b>
-        <select name="type" id="type_dropbox">
+        <b><label for="type">Type:</label></b>
+        <select name="type" id="type_dropbox" autocomplete="off">
+          <option value="none"
+                  selected disabled hidden>(click to select)</option>
           {TYPES}
         </select>
       </p>
