@@ -33,7 +33,7 @@ class VivadoTableParser(Parser):
         super().__init__(src)
 
     def get_table(self):
-        matches = re.findall(r'\d+\. (.+?)\n-+\n\n([\+-\| \S\n]+?)\n\n',
+        matches = re.findall(r'(?:\d+\.)+(?:\d+)? (.+?)\n-+\n\n([\+-\| \S\n]+?)\n\n',
                              self._str)
 
         tables = []
