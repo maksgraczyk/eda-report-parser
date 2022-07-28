@@ -33,7 +33,7 @@ class VivadoTableParser(Parser):
         super().__init__(src)
 
     def get_table(self):
-        matches = re.findall(r'\d+\. (.+?)\n-+\n\n([\+-\| \S\n]+?)\n\n',
+        matches = re.findall(r'(?:\d+\.)+(?:\d+)? (.+?)\n-+\n\n([\+-\| \S\n]+?)\n\n',
                              self._str)
 
         tables = []
@@ -73,8 +73,18 @@ class VivadoTableParser(Parser):
                     row_elements = \
                         list(map(str.strip, line.split(' |')))[:-1]
                     spaces_cnt = count_spaces(row_elements[0])
+                    none_cnt = 0
+                    
+                    row_elements[0] = row_elements[0][spaces_cnt + 1:]
 
-                    if i > 0:
+                    for index in range(len(row_elements)):
+                        if len(row_elements[index]) == 0:
+                            row_elements[index] = None
+                            none_cnt += 1
+
+                    parsed_table.append(row_elements)
+
+                    if i > 0 and none_cnt < len(row_elements):
                         if cur_space_level is None:
                             cur_space_level = spaces_cnt
                             orig_space_level = spaces_cnt
@@ -91,14 +101,6 @@ class VivadoTableParser(Parser):
 
                         if cur_space_level > orig_space_level:
                             children[i] = last_space_index[-2]
-
-                    row_elements[0] = row_elements[0][spaces_cnt + 1:]
-
-                    for i in range(len(row_elements)):
-                        if len(row_elements[i]) == 0:
-                            row_elements[i] = None
-
-                    parsed_table.append(row_elements)
 
             result[section_name] = (parsed_table, children)
 
